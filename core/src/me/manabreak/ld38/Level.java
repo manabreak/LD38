@@ -15,10 +15,9 @@ import java.util.List;
 
 public class Level {
 
-    protected final GameStage stage;
-    protected final List<Body> staticBodies = new ArrayList<>();
-    protected final List<Body> keys = new ArrayList<>();
-    private final float playerStartAngle;
+    private final GameStage stage;
+    private final List<Body> staticBodies = new ArrayList<>();
+    private float playerStartAngle;
     private float playerStartY;
     private float playerStartX;
     private Body door;
@@ -28,17 +27,27 @@ public class Level {
     private int keysCollected = 0;
 
     private List<Body> toBeDestroyed = new ArrayList<>();
+    private List<Body> keys = new ArrayList<>();
+    private String nextLevel = null;
+    private String levelToLoad = null;
 
-    public Level(GameStage stage, String jsonFile) {
+    public Level(GameStage stage) {
         this.stage = stage;
         this.physics = stage.getPhysics();
+    }
 
-        FileHandle f = Gdx.files.internal("levels/0001.json");
+    public void load(String jsonFile) {
+        clear();
+
+        FileHandle f = Gdx.files.internal("levels/" + jsonFile + ".json");
         JsonReader reader = new JsonReader();
         JsonValue value = reader.parse(f);
         playerStartX = value.getFloat("start_x");
         playerStartY = value.getFloat("start_y");
         playerStartAngle = value.getFloat("start_angle");
+
+        Player player = stage.getPlayer();
+        physics.setBodyPosition(player.getBody(), playerStartX, playerStartY);
 
         JsonValue statics = value.get("statics");
         for (int i = 0; i < statics.size; ++i) {
@@ -53,7 +62,41 @@ public class Level {
             createKey(key);
         }
 
+        nextLevel = value.getString("next_level");
+
         createDoor(value);
+    }
+
+    public void clear() {
+        keysCollected = 0;
+        keysTotal = 0;
+        playerStartX = 0f;
+        playerStartY = 0f;
+        playerStartAngle = 0f;
+        nextLevel = null;
+
+        stage.getPlayer().getBody().setLinearVelocity(0f, 0f);
+
+        for (Body body : toBeDestroyed) {
+            physics.destroy(body);
+        }
+        toBeDestroyed.clear();
+
+        if (door != null) {
+            physics.destroy(door);
+            door = null;
+        }
+
+        for (Body body : staticBodies) {
+            physics.destroy(body);
+        }
+        staticBodies.clear();
+
+        for (Body body : keys) {
+            physics.destroy(body);
+        }
+        keys.clear();
+
     }
 
     private void createDoor(JsonValue value) {
@@ -73,6 +116,7 @@ public class Level {
                     System.out.println("Player touched door");
                     if (keysCollected == keysTotal) {
                         System.out.println("Level complete!");
+                        queueLoad(nextLevel);
                     } else {
                         System.out.println("Keys missing...");
                     }
@@ -86,11 +130,20 @@ public class Level {
         });
     }
 
+    private void queueLoad(String s) {
+        levelToLoad = s;
+    }
+
     public void act(float dt) {
         for (Body body : toBeDestroyed) {
             physics.destroy(body);
         }
         toBeDestroyed.clear();
+
+        if (levelToLoad != null) {
+            load(levelToLoad);
+            levelToLoad = null;
+        }
     }
 
     private void createKey(JsonValue value) {
@@ -99,13 +152,14 @@ public class Level {
         final Body body = physics.createBox(3f, 3f, BodyDef.BodyType.StaticBody);
         physics.setBodyPosition(body, x, y);
         body.getFixtureList().get(0).setSensor(true);
+        keys.add(body);
         Key key = new Key() {
             @Override
             public void onCollisionBegin(Contact contact, Fixture other) {
                 if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
                     keysCollected++;
                     toBeDestroyed.add(body);
-                    keys.remove(this);
+                    keys.remove(body);
                     if (keysCollected == keysTotal) {
                         System.out.println("All keys collected!");
                     } else {
@@ -115,7 +169,6 @@ public class Level {
             }
         };
         body.getFixtureList().get(0).setUserData(key);
-        keys.add(body);
     }
 
     private void createStatic(JsonValue value) {

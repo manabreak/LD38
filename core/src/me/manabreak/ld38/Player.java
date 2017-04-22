@@ -35,15 +35,20 @@ public class Player {
     };
 
     private boolean grounded = false;
+
     private PhysicsCallback groundSensorCallback = new PhysicsCallback() {
         @Override
         public void onCollisionBegin(Contact contact, Fixture other) {
-            grounded = true;
+            if (!other.isSensor()) {
+                grounded = true;
+            }
         }
 
         @Override
         public void onCollisionEnd(Contact contact, Fixture other) {
-            grounded = false;
+            if (!other.isSensor()) {
+                grounded = false;
+            }
         }
     };
     private boolean jumping = false;

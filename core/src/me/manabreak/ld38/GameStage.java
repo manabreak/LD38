@@ -1,5 +1,7 @@
 package me.manabreak.ld38;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
@@ -21,9 +23,8 @@ public class GameStage extends Stage {
         initCamera();
 
         player = new Player(this);
-        level = new Level(this, "0001.json");
-
-        physics.setBodyPosition(player.getBody(), level.getPlayerStartX(), level.getPlayerStartY());
+        level = new Level(this);
+        level.load("0001");
     }
 
     private void initCamera() {
@@ -35,6 +36,11 @@ public class GameStage extends Stage {
     @Override
     public void act(float dt) {
         super.act(dt);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            level.clear();
+            level.load("0002");
+        }
 
         level.act(dt);
 
