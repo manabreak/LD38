@@ -6,15 +6,20 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class Physics {
+public class Physics implements ContactListener {
 
     public static final float SCALE = 6f;
     public static final float INV_SCALE = 1f / SCALE;
-    public static final float GRAVITY = 20f;
+    public static final float GRAVITY = 40f;
 
     private final Box2DDebugRenderer debugRenderer;
     private final Vector2 worldGravity;
@@ -23,6 +28,7 @@ public class Physics {
     public Physics() {
         worldGravity = new Vector2(0f, 0f);
         world = new World(worldGravity, true);
+        world.setContactListener(this);
         debugRenderer = new Box2DDebugRenderer();
     }
 
@@ -67,5 +73,45 @@ public class Physics {
 
     public void render(Matrix4 combined) {
         debugRenderer.render(world, combined);
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture fixA = contact.getFixtureA();
+        Fixture fixB = contact.getFixtureB();
+        Object dataA = fixA.getUserData();
+        Object dataB = fixB.getUserData();
+
+        if (dataA instanceof PhysicsCallback) {
+            ((PhysicsCallback) dataA).onCollisionBegin(contact, fixB);
+        }
+        if (dataB instanceof PhysicsCallback) {
+            ((PhysicsCallback) dataB).onCollisionBegin(contact, fixA);
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Fixture fixA = contact.getFixtureA();
+        Fixture fixB = contact.getFixtureB();
+        Object dataA = fixA.getUserData();
+        Object dataB = fixB.getUserData();
+
+        if (dataA instanceof PhysicsCallback) {
+            ((PhysicsCallback) dataA).onCollisionEnd(contact, fixB);
+        }
+        if (dataB instanceof PhysicsCallback) {
+            ((PhysicsCallback) dataB).onCollisionEnd(contact, fixA);
+        }
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 }
