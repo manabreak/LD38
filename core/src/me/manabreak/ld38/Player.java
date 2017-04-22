@@ -3,7 +3,6 @@ package me.manabreak.ld38;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -12,6 +11,10 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+
+import static com.badlogic.gdx.math.MathUtils.PI;
+import static com.badlogic.gdx.math.MathUtils.PI2;
+import static com.badlogic.gdx.math.MathUtils.radDeg;
 
 public class Player {
 
@@ -37,12 +40,14 @@ public class Player {
     };
 
     private boolean grounded = false;
+    private int groundedCounter = 0;
 
     private PhysicsCallback groundSensorCallback = new PhysicsCallback() {
         @Override
         public void onCollisionBegin(Contact contact, Fixture other) {
             if (!other.isSensor()) {
                 grounded = true;
+                groundedCounter++;
                 actor.clearActions();
                 actor.addAction(Actions.sequence(
                         Actions.scaleTo(1f, 0.7f, 0.08f, Interpolation.fade),
@@ -54,7 +59,11 @@ public class Player {
         @Override
         public void onCollisionEnd(Contact contact, Fixture other) {
             if (!other.isSensor()) {
-                grounded = false;
+                groundedCounter--;
+                if (groundedCounter <= 0) {
+                    grounded = false;
+                    groundedCounter = 0;
+                }
             }
         }
     };
@@ -107,7 +116,7 @@ public class Player {
 
         float velX = 0f;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            velX -= inverted ? -MOVE_VEL : MOVE_VEL;
+            velX -= MOVE_VEL;
             facingRight = false;
             if (!walking) {
                 startWalkAnimation();
@@ -115,7 +124,7 @@ public class Player {
             walking = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            velX += inverted ? -MOVE_VEL : MOVE_VEL;
+            velX += MOVE_VEL;
             facingRight = true;
             if (!walking) {
                 startWalkAnimation();
@@ -184,10 +193,12 @@ public class Player {
         y += MathUtils.sin(body.getAngle()) * actor.getHeight();
         */
 
-        actor.setRotation((body.getAngle()) * MathUtils.radDeg);
-        actor.sprite.setFlip(!facingRight, inverted);
+        if (!stage.isInverting()) {
+            actor.setRotation((body.getAngle()) * radDeg);
+            actor.sprite.setFlip(!facingRight, false);
 
-        actor.setPosition(x, y);
+            actor.setPosition(x, y);
+        }
     }
 
     private void stopWalkAnimation() {
@@ -211,7 +222,13 @@ public class Player {
     }
 
     public void setPlayerAngle(float angleRad) {
-        body.setTransform(body.getPosition(), angleRad + MathUtils.PI / 2f);
+        float angle = angleRad + PI / 2f;
+        if (inverted) {
+            angle += PI;
+        }
+        while (angle >= PI2) angle -= PI2;
+        while (angle < 0f) angle += PI2;
+        body.setTransform(body.getPosition(), angle);
     }
 
     public float getAngleRad() {
@@ -232,5 +249,9 @@ public class Player {
 
     public boolean isInverted() {
         return inverted;
+    }
+
+    public void setSpriteRotation(float a) {
+        actor.setRotation(a);
     }
 }

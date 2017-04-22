@@ -144,7 +144,8 @@ public class Level {
             @Override
             public void onCollisionBegin(Contact contact, Fixture other) {
                 if(other.getUserData() == stage.getPlayer().getPlayerCallback()) {
-                    stage.getPlayer().invertGravity();
+                    // stage.getPlayer().invertGravity();
+                    stage.invert();
                 }
             }
 

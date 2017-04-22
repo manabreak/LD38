@@ -10,6 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import static com.badlogic.gdx.math.MathUtils.PI;
+import static com.badlogic.gdx.math.MathUtils.PI2;
+
 public class GameStage extends Stage {
 
     private static final float CAM_LERP_SPEED = 1f;
@@ -19,6 +22,9 @@ public class GameStage extends Stage {
     private Level level;
 
     Sprite s;
+    private boolean inverting = false;
+    private float invertTimer = 0f;
+    private float invertStartAngle;
 
     public GameStage() {
         super(new ExtendViewport(6f, 6f));
@@ -45,6 +51,18 @@ public class GameStage extends Stage {
     public void act(float dt) {
         super.act(dt);
 
+        if (inverting) {
+            float a = Interpolation.elastic.apply(invertStartAngle, invertStartAngle + PI, invertTimer / 2f);
+            setCameraRotation(a);
+            player.setSpriteRotation(a);
+            invertTimer += dt;
+            if (invertTimer >= 2f) {
+                player.invertGravity();
+                inverting = false;
+            }
+            return;
+        }
+
         level.act(dt);
 
         Vector2 pos = player.getBodyPosition().cpy();
@@ -57,14 +75,18 @@ public class GameStage extends Stage {
         player.act(dt);
         physics.act(dt);
 
+        setCameraRotation(player.getAngleRad());
+    }
+
+    private void setCameraRotation(float a) {
         OrthographicCamera cam = (OrthographicCamera) getCamera();
-        cam.up.set(0f, player.isInverted() ? -1f : 1f, 0f);
+        cam.up.set(0f, 1f, 0f);
         cam.direction.set(0f, 0f, -1f);
-        // cam.position.x = MathUtils.lerp(cam.position.x, player.getBodyPosition().x, dt * CAM_LERP_SPEED);
-        // cam.position.y = MathUtils.lerp(cam.position.y, player.getBodyPosition().y, dt * CAM_LERP_SPEED);
         cam.position.x = player.getBodyPosition().x;
         cam.position.y = player.getBodyPosition().y;
-        cam.rotate(-player.getAngleRad() * MathUtils.radDeg);
+        while (a >= PI2) a -= PI2;
+        while (a < 0f) a += PI2;
+        cam.rotate(-a * MathUtils.radDeg);
     }
 
     @Override
@@ -93,5 +115,15 @@ public class GameStage extends Stage {
 
     public void startLevel() {
         getRoot().addAction(Actions.fadeIn(2f, Interpolation.fade));
+    }
+
+    public void invert() {
+        inverting = true;
+        invertTimer = 0f;
+        invertStartAngle = player.getBody().getAngle();
+    }
+
+    public boolean isInverting() {
+        return inverting;
     }
 }
