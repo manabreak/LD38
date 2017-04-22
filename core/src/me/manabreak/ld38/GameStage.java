@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,10 +18,14 @@ public class GameStage extends Stage {
 
     private Level level;
 
+    Sprite s;
+
     public GameStage() {
         super(new ExtendViewport(8f, 8f));
         physics = new Physics();
         initCamera();
+
+        s = Res.create("chicken");
 
         player = new Player(this);
         level = new Level(this);
@@ -62,7 +67,6 @@ public class GameStage extends Stage {
         cam.position.x = player.getBodyPosition().x;
         cam.position.y = player.getBodyPosition().y;
         cam.rotate(-player.getAngleRad() * MathUtils.radDeg);
-
     }
 
     @Override

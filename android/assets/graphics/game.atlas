@@ -1,9 +1,44 @@
 
 game.png
-size: 32,32
+size: 1024,512
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
+chicken
+  rotate: false
+  xy: 1, 260
+  size: 256, 244
+  orig: 256, 244
+  offset: 0, 0
+  index: -1
+door0
+  rotate: false
+  xy: 492, 248
+  size: 171, 256
+  orig: 171, 256
+  offset: 0, 0
+  index: -1
+earth0
+  rotate: false
+  xy: 260, 275
+  size: 229, 229
+  orig: 229, 229
+  offset: 0, 0
+  index: -1
+key
+  rotate: false
+  xy: 666, 248
+  size: 108, 256
+  orig: 108, 256
+  offset: 0, 0
+  index: -1
+rect0
+  rotate: false
+  xy: 1, 20
+  size: 240, 237
+  orig: 240, 237
+  offset: 0, 0
+  index: -1
 white
   rotate: false
   xy: 1, 1

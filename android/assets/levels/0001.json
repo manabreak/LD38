@@ -25,7 +25,7 @@
   "keys": [
     {
       "x": 0.0,
-      "y": -5.0
+      "y": -10.0
     }
   ],
   "start_x": -5.0,
@@ -34,5 +34,6 @@
   "door_x": 0.0,
   "door_y": 8.0,
   "door_angle": 0.0,
+  "door_graphic": "door0",
   "next_level": "0002"
 }

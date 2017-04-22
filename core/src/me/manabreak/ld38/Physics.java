@@ -1,5 +1,7 @@
 package me.manabreak.ld38;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -24,6 +26,7 @@ public class Physics implements ContactListener {
     private final Box2DDebugRenderer debugRenderer;
     private final Vector2 worldGravity;
     private World world;
+    private boolean debugDrawEnabled = true;
 
     public Physics() {
         worldGravity = new Vector2(0f, 0f);
@@ -34,6 +37,10 @@ public class Physics implements ContactListener {
 
     public void act(float delta) {
         world.step(delta, 6, 2);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
+            debugDrawEnabled = !debugDrawEnabled;
+        }
     }
 
     public void setBodyPosition(Body body, float x, float y) {
@@ -48,7 +55,7 @@ public class Physics implements ContactListener {
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width * INV_SCALE / 2f, height * INV_SCALE / 2f);
+        shape.setAsBox((width * INV_SCALE) / 2f, (height * INV_SCALE) / 2f);
         fdef.shape = shape;
         body.createFixture(fdef);
         shape.dispose();
@@ -72,7 +79,9 @@ public class Physics implements ContactListener {
     }
 
     public void render(Matrix4 combined) {
-        debugRenderer.render(world, combined);
+        if (debugDrawEnabled) {
+            debugRenderer.render(world, combined);
+        }
     }
 
     public void destroy(Body body) {

@@ -2,6 +2,7 @@ package me.manabreak.ld38;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class Player {
 
@@ -41,6 +43,11 @@ public class Player {
         public void onCollisionBegin(Contact contact, Fixture other) {
             if (!other.isSensor()) {
                 grounded = true;
+                actor.clearActions();
+                actor.addAction(Actions.sequence(
+                        Actions.scaleTo(1f, 0.7f, 0.08f, Interpolation.fade),
+                        Actions.scaleTo(1f, 1f, 0.2f, Interpolation.fade)
+                ));
             }
         }
 
@@ -55,9 +62,20 @@ public class Player {
     private float jumpingForce = 0f;
     private Vector2 contJumpVec = new Vector2();
 
+    private SpriteActor actor;
+    private boolean facingRight = true;
+    private boolean walking = false;
+
     public Player(GameStage stage) {
         this.stage = stage;
-        body = stage.getPhysics().createBox(2.5f, 4.f, BodyDef.BodyType.DynamicBody);
+
+        actor = new SpriteActor(Res.create("chicken"));
+        float r = actor.sprite.getWidth() / actor.sprite.getHeight();
+        actor.setSize(3f * r * Physics.INV_SCALE, 3f * Physics.INV_SCALE);
+        actor.setOriginCenter();
+        stage.addActor(actor);
+
+        body = stage.getPhysics().createBox(3f * r, 3.f, BodyDef.BodyType.DynamicBody);
         body.getFixtureList().get(0).setUserData(bodyCallback);
         body.getFixtureList().get(0).setFriction(0f);
 
@@ -72,6 +90,7 @@ public class Player {
         shape.dispose();
 
         playerGravity = new Vector2(0f, 0f);
+
     }
 
     public void setPlayerGravity(float x, float y) {
@@ -84,9 +103,26 @@ public class Player {
         float velX = 0f;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             velX -= MOVE_VEL;
+            facingRight = false;
+            if (!walking) {
+                startWalkAnimation();
+            }
+            walking = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             velX += MOVE_VEL;
+            facingRight = true;
+            if (!walking) {
+                startWalkAnimation();
+            }
+            walking = true;
+        }
+
+        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (walking) {
+                walking = false;
+                stopWalkAnimation();
+            }
         }
 
         if (grounded) {
@@ -97,6 +133,11 @@ public class Player {
                 jumpingForce = 100f;
                 jumpVec.rotateRad(body.getAngle());
                 body.applyLinearImpulse(jumpVec.x, jumpVec.y, 0f, 0f, true);
+                actor.clearActions();
+                actor.setScale(0.9f, 1.2f);
+                actor.addAction(Actions.sequence(
+                        Actions.scaleTo(1f, 1f, 0.5f, Interpolation.circleOut)
+                ));
             }
         }
 
@@ -129,6 +170,35 @@ public class Player {
             vel.rotateRad(-body.getAngle());
             body.setLinearVelocity(vel);
         }
+
+        float x = body.getPosition().x - actor.getWidth() / 2f;
+        float y = body.getPosition().y - actor.getHeight() / 2f;
+
+        /*
+        x += MathUtils.cos(-body.getAngle()) * actor.getWidth();
+        y += MathUtils.sin(body.getAngle()) * actor.getHeight();
+        */
+
+        actor.setRotation((body.getAngle()) * MathUtils.radDeg);
+        actor.sprite.setFlip(!facingRight, false);
+
+        actor.setPosition(x, y);
+    }
+
+    private void stopWalkAnimation() {
+        actor.clearActions();
+        actor.setScale(1f);
+    }
+
+    private void startWalkAnimation() {
+        actor.clearActions();
+        actor.setScale(1f);
+        actor.addAction(Actions.forever(
+                Actions.sequence(
+                        Actions.scaleBy(0f, -0.1f, 0.1f, Interpolation.fade),
+                        Actions.scaleBy(0f, 0.1f, 0.1f, Interpolation.fade)
+                )
+        ));
     }
 
     public Vector2 getBodyPosition() {

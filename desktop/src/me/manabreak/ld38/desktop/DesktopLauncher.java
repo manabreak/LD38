@@ -19,8 +19,8 @@ public class DesktopLauncher {
         File f = new File("../../images");
         if (f.exists() && f.isDirectory() && f.listFiles().length > 0) {
             TexturePacker.Settings s = new TexturePacker.Settings();
-            s.filterMag = Texture.TextureFilter.Nearest;
-            s.filterMin = Texture.TextureFilter.Nearest;
+            s.filterMag = Texture.TextureFilter.Linear;
+            s.filterMin = Texture.TextureFilter.Linear;
             s.maxWidth = 1024;
             s.maxHeight = 1024;
             s.paddingX = 3;
