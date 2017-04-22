@@ -25,16 +25,12 @@ public class Player {
     private PhysicsCallback bodyCallback = new PhysicsCallback() {
         @Override
         public void onCollisionBegin(Contact contact, Fixture other) {
-            System.out.println("Body begin");
-            Object data = other.getUserData();
-            if (data instanceof Key) {
-                System.out.println("Picked up a key!");
-            }
+
         }
 
         @Override
         public void onCollisionEnd(Contact contact, Fixture other) {
-            System.out.println("Body end");
+
         }
     };
 
@@ -42,13 +38,11 @@ public class Player {
     private PhysicsCallback groundSensorCallback = new PhysicsCallback() {
         @Override
         public void onCollisionBegin(Contact contact, Fixture other) {
-            System.out.println("GS begin");
             grounded = true;
         }
 
         @Override
         public void onCollisionEnd(Contact contact, Fixture other) {
-            System.out.println("GS end");
             grounded = false;
         }
     };

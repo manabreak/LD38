@@ -21,6 +21,7 @@ public class Level {
     private final float playerStartAngle;
     private float playerStartY;
     private float playerStartX;
+    private Body door;
     private Physics physics;
 
     private int keysTotal = 0;
@@ -51,6 +52,38 @@ public class Level {
             JsonValue key = keys.get(i);
             createKey(key);
         }
+
+        createDoor(value);
+    }
+
+    private void createDoor(JsonValue value) {
+        float doorX = value.getFloat("door_x");
+        float doorY = value.getFloat("door_y");
+        float doorAngle = value.getFloat("door_angle");
+
+        door = physics.createBox(4f, 6f, BodyDef.BodyType.StaticBody);
+        door.getFixtureList().get(0).setSensor(true);
+        physics.setBodyPosition(door, doorX, doorY);
+        door.setTransform(door.getPosition(), doorAngle * MathUtils.degRad);
+
+        door.getFixtureList().get(0).setUserData(new PhysicsCallback() {
+            @Override
+            public void onCollisionBegin(Contact contact, Fixture other) {
+                if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
+                    System.out.println("Player touched door");
+                    if (keysCollected == keysTotal) {
+                        System.out.println("Level complete!");
+                    } else {
+                        System.out.println("Keys missing...");
+                    }
+                }
+            }
+
+            @Override
+            public void onCollisionEnd(Contact contact, Fixture other) {
+
+            }
+        });
     }
 
     public void act(float dt) {
