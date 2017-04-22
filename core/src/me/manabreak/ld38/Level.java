@@ -5,6 +5,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -15,10 +17,16 @@ public class Level {
 
     protected final GameStage stage;
     protected final List<Body> staticBodies = new ArrayList<>();
+    protected final List<Body> keys = new ArrayList<>();
     private final float playerStartAngle;
     private float playerStartY;
     private float playerStartX;
     private Physics physics;
+
+    private int keysTotal = 0;
+    private int keysCollected = 0;
+
+    private List<Body> toBeDestroyed = new ArrayList<>();
 
     public Level(GameStage stage, String jsonFile) {
         this.stage = stage;
@@ -36,6 +44,45 @@ public class Level {
             JsonValue stat = statics.get(i);
             createStatic(stat);
         }
+
+        JsonValue keys = value.get("keys");
+        keysTotal = keys.size;
+        for (int i = 0; i < keys.size; ++i) {
+            JsonValue key = keys.get(i);
+            createKey(key);
+        }
+    }
+
+    public void act(float dt) {
+        for (Body body : toBeDestroyed) {
+            physics.destroy(body);
+        }
+        toBeDestroyed.clear();
+    }
+
+    private void createKey(JsonValue value) {
+        float x = value.getFloat("x");
+        float y = value.getFloat("y");
+        final Body body = physics.createBox(3f, 3f, BodyDef.BodyType.StaticBody);
+        physics.setBodyPosition(body, x, y);
+        body.getFixtureList().get(0).setSensor(true);
+        Key key = new Key() {
+            @Override
+            public void onCollisionBegin(Contact contact, Fixture other) {
+                if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
+                    keysCollected++;
+                    toBeDestroyed.add(body);
+                    keys.remove(this);
+                    if (keysCollected == keysTotal) {
+                        System.out.println("All keys collected!");
+                    } else {
+                        System.out.println("Collected: " + keysCollected + "/" + keysTotal);
+                    }
+                }
+            }
+        };
+        body.getFixtureList().get(0).setUserData(key);
+        keys.add(body);
     }
 
     private void createStatic(JsonValue value) {
@@ -56,6 +103,7 @@ public class Level {
         if (body != null) {
             physics.setBodyPosition(body, x, y);
             body.setTransform(body.getPosition(), angle * MathUtils.degRad);
+            staticBodies.add(body);
         } else {
             System.out.println("Couldn't parse static from value: " + value.toString());
         }

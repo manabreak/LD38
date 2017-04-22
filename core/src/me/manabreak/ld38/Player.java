@@ -26,6 +26,10 @@ public class Player {
         @Override
         public void onCollisionBegin(Contact contact, Fixture other) {
             System.out.println("Body begin");
+            Object data = other.getUserData();
+            if (data instanceof Key) {
+                System.out.println("Picked up a key!");
+            }
         }
 
         @Override
@@ -69,8 +73,6 @@ public class Player {
         shape.dispose();
 
         playerGravity = new Vector2(0f, 0f);
-
-        stage.getPhysics().setBodyPosition(body, 0f, 15f);
     }
 
     public void setPlayerGravity(float x, float y) {
@@ -144,5 +146,9 @@ public class Player {
 
     public Body getBody() {
         return body;
+    }
+
+    public PhysicsCallback getPlayerCallback() {
+        return bodyCallback;
     }
 }

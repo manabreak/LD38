@@ -36,6 +36,8 @@ public class GameStage extends Stage {
     public void act(float dt) {
         super.act(dt);
 
+        level.act(dt);
+
         Vector2 pos = player.getBodyPosition().cpy();
         if (pos.x != 0f || pos.y != 0f) {
             pos.nor().scl(-Physics.GRAVITY);
@@ -65,5 +67,9 @@ public class GameStage extends Stage {
 
     public Physics getPhysics() {
         return physics;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

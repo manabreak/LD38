@@ -75,6 +75,10 @@ public class Physics implements ContactListener {
         debugRenderer.render(world, combined);
     }
 
+    public void destroy(Body body) {
+        world.destroyBody(body);
+    }
+
     @Override
     public void beginContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();
