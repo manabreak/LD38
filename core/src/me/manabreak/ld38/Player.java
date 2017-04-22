@@ -65,6 +65,7 @@ public class Player {
     private SpriteActor actor;
     private boolean facingRight = true;
     private boolean walking = false;
+    private boolean inverted = false;
 
     public Player(GameStage stage) {
         this.stage = stage;
@@ -98,11 +99,15 @@ public class Player {
     }
 
     public void act(float dt) {
-        body.applyForce(playerGravity.x, playerGravity.y, 0f, 0f, true);
+        if (inverted) {
+            body.applyForce(-playerGravity.x, -playerGravity.y, 0f, 0f, true);
+        } else {
+            body.applyForce(playerGravity.x, playerGravity.y, 0f, 0f, true);
+        }
 
         float velX = 0f;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            velX -= MOVE_VEL;
+            velX -= inverted ? -MOVE_VEL : MOVE_VEL;
             facingRight = false;
             if (!walking) {
                 startWalkAnimation();
@@ -110,7 +115,7 @@ public class Player {
             walking = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            velX += MOVE_VEL;
+            velX += inverted ? -MOVE_VEL : MOVE_VEL;
             facingRight = true;
             if (!walking) {
                 startWalkAnimation();
@@ -180,7 +185,7 @@ public class Player {
         */
 
         actor.setRotation((body.getAngle()) * MathUtils.radDeg);
-        actor.sprite.setFlip(!facingRight, false);
+        actor.sprite.setFlip(!facingRight, inverted);
 
         actor.setPosition(x, y);
     }
@@ -219,5 +224,13 @@ public class Player {
 
     public PhysicsCallback getPlayerCallback() {
         return bodyCallback;
+    }
+
+    public void invertGravity() {
+        inverted = !inverted;
+    }
+
+    public boolean isInverted() {
+        return inverted;
     }
 }

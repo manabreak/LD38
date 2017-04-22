@@ -59,16 +59,28 @@ public class Level {
             createStatic(stat);
         }
 
-        JsonValue keys = value.get("keys");
-        keysTotal = keys.size;
-        for (int i = 0; i < keys.size; ++i) {
-            JsonValue key = keys.get(i);
-            createKey(key);
+        if (value.has("keys")) {
+            JsonValue keys = value.get("keys");
+            keysTotal = keys.size;
+            for (int i = 0; i < keys.size; ++i) {
+                JsonValue key = keys.get(i);
+                createKey(key);
+            }
+        }
+
+        if (value.has("eggs")) {
+            JsonValue eggs = value.get("eggs");
+            for (int i = 0; i < eggs.size; ++i) {
+                JsonValue egg = eggs.get(i);
+                createEgg(egg);
+            }
         }
 
         nextLevel = value.getString("next_level");
 
         createDoor(value);
+
+        stage.startLevel();
     }
 
     public void clear() {
@@ -113,6 +125,36 @@ public class Level {
 
     }
 
+    private void createEgg(JsonValue value) {
+        float x = value.getFloat("x");
+        float y = value.getFloat("y");
+
+        Body egg = physics.createSphere(1.f, BodyDef.BodyType.StaticBody);
+        egg.getFixtureList().get(0).setSensor(true);
+        physics.setBodyPosition(egg, x, y);
+
+        SpriteActor a = new SpriteActor(Res.create("egg0"));
+        stage.getRoot().addActorAt(0, a);
+        float r = a.sprite.getWidth() / a.sprite.getHeight();
+        a.setSize(3f * r * Physics.INV_SCALE, 3f * Physics.INV_SCALE);
+        a.setOriginCenter();
+        a.setPosition(x * Physics.INV_SCALE - a.getWidth() / 2f, y * Physics.INV_SCALE - a.getHeight() / 2f);
+
+        egg.getFixtureList().get(0).setUserData(new PhysicsCallback() {
+            @Override
+            public void onCollisionBegin(Contact contact, Fixture other) {
+                if(other.getUserData() == stage.getPlayer().getPlayerCallback()) {
+                    stage.getPlayer().invertGravity();
+                }
+            }
+
+            @Override
+            public void onCollisionEnd(Contact contact, Fixture other) {
+
+            }
+        });
+    }
+
     private void createDoor(JsonValue value) {
         float doorX = value.getFloat("door_x");
         float doorY = value.getFloat("door_y");
@@ -137,7 +179,7 @@ public class Level {
                     System.out.println("Player touched door");
                     if (keysCollected == keysTotal) {
                         System.out.println("Level complete!");
-                        queueLoad(nextLevel);
+                        stage.levelComplete();
                     } else {
                         System.out.println("Keys missing...");
                     }
@@ -149,10 +191,6 @@ public class Level {
 
             }
         });
-    }
-
-    private void queueLoad(String s) {
-        levelToLoad = s;
     }
 
     public void act(float dt) {
@@ -219,7 +257,7 @@ public class Level {
             float height = value.getFloat("height");
             body = physics.createBox(width, height, BodyDef.BodyType.StaticBody);
 
-            SpriteActor actor = new SpriteActor(Res.create("rect0"));
+            SpriteActor actor = new SpriteActor(Res.create(value.getString("sprite", "rect0")));
             actor.setSize(width * Physics.INV_SCALE * 1.05f, height * Physics.INV_SCALE * 1.05f);
             stage.addActor(actor);
             actor.setOriginCenter();
@@ -243,5 +281,9 @@ public class Level {
 
     public float getPlayerStartX() {
         return playerStartX;
+    }
+
+    public void loadNext() {
+        levelToLoad = nextLevel;
     }
 }

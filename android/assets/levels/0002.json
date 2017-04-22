@@ -2,14 +2,46 @@
   "statics": [
     {
       "shape": "circle",
+      "radius": 3.0,
+      "x": -5.5,
+      "y": 0.0
+    },
+    {
+      "shape": "circle",
+      "radius": 3.0,
+      "x": 5.5,
+      "y": 0.0
+    },
+    {
+      "shape": "circle",
       "radius": 5.0,
       "x": 0.0,
       "y": 0.0
+    },
+    {
+      "shape": "rect",
+      "width": 3.0,
+      "height": 3.0,
+      "x": 5.0,
+      "y": -8.0,
+      "angle": 30.0
+    },
+    {
+      "shape": "rect",
+      "width": 3.0,
+      "height": 3.0,
+      "x": -5.0,
+      "y": -8.0,
+      "angle": -30.0
     }
-  ],
+  ]
   "keys": [
     {
-      "x": 0.0,
+      "x": 20.0,
+      "y": -5.0
+    },
+    {
+      "x": -20.0,
       "y": -5.0
     }
   ],
@@ -19,5 +51,5 @@
   "door_x": 0.0,
   "door_y": 8.0,
   "door_angle": 0.0,
-  "next_level": "0001"
+  "next_level": "0003"
 }

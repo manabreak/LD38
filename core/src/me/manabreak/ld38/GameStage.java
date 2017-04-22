@@ -1,13 +1,13 @@
 package me.manabreak.ld38;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class GameStage extends Stage {
@@ -21,15 +21,18 @@ public class GameStage extends Stage {
     Sprite s;
 
     public GameStage() {
-        super(new ExtendViewport(8f, 8f));
+        super(new ExtendViewport(6f, 6f));
         physics = new Physics();
         initCamera();
 
         s = Res.create("chicken");
 
+        getRoot().setColor(1f, 1f, 1f, 0f);
+
         player = new Player(this);
         level = new Level(this);
-        level.load("0001");
+
+        level.load("0003");
     }
 
     private void initCamera() {
@@ -41,11 +44,6 @@ public class GameStage extends Stage {
     @Override
     public void act(float dt) {
         super.act(dt);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            level.clear();
-            level.load("0002");
-        }
 
         level.act(dt);
 
@@ -60,7 +58,7 @@ public class GameStage extends Stage {
         physics.act(dt);
 
         OrthographicCamera cam = (OrthographicCamera) getCamera();
-        cam.up.set(0f, 1f, 0f);
+        cam.up.set(0f, player.isInverted() ? -1f : 1f, 0f);
         cam.direction.set(0f, 0f, -1f);
         // cam.position.x = MathUtils.lerp(cam.position.x, player.getBodyPosition().x, dt * CAM_LERP_SPEED);
         // cam.position.y = MathUtils.lerp(cam.position.y, player.getBodyPosition().y, dt * CAM_LERP_SPEED);
@@ -81,5 +79,19 @@ public class GameStage extends Stage {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void levelComplete() {
+        getRoot().addAction(Actions.sequence(Actions.fadeOut(2f, Interpolation.fade),
+                Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        level.loadNext();
+                    }
+                })));
+    }
+
+    public void startLevel() {
+        getRoot().addAction(Actions.fadeIn(2f, Interpolation.fade));
     }
 }

@@ -16,7 +16,7 @@ public class SpriteActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        sprite.draw(batch);
+        sprite.draw(batch, parentAlpha);
     }
 
     @Override
