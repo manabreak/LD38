@@ -86,6 +86,14 @@
         }],
  "nextobjectid":13,
  "orientation":"orthogonal",
+ "properties":
+    {
+     "next_level":"lvl_0001"
+    },
+ "propertytypes":
+    {
+     "next_level":"string"
+    },
  "renderorder":"right-down",
  "tileheight":16,
  "tilesets":[],

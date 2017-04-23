@@ -50,50 +50,55 @@ public class Level {
         JsonValue layers = value.get("layers");
         for (int i = 0; i < layers.size; ++i) {
             JsonValue layer = layers.get(i);
-            if ("statics".equals(layer.getString("name"))) {
+            String name = layer.getString("name");
+            if ("statics".equals(name)) {
                 extractStatics(layer);
+            } else if ("sensors".equals(name)) {
+                extractSensors(layer);
+            } else if ("spawn".equals(name)) {
+                extractSpawn(layer);
             }
         }
-
-        /*
-        playerStartX = value.getFloat("start_x");
-        playerStartY = value.getFloat("start_y");
-        playerStartAngle = value.getFloat("start_angle");
-        */
 
         Player player = stage.getPlayer();
         physics.setBodyPosition(player.getBody(), playerStartX, playerStartY);
+        player.setPlayerAngle(playerStartAngle * MathUtils.degRad);
 
-        /*
-        JsonValue statics = value.get("statics");
-        for (int i = 0; i < statics.size; ++i) {
-            JsonValue stat = statics.get(i);
-            createStatic(stat);
-        }
-
-        if (value.has("keys")) {
-            JsonValue keys = value.get("keys");
-            keysTotal = keys.size;
-            for (int i = 0; i < keys.size; ++i) {
-                JsonValue key = keys.get(i);
-                createKey(key);
-            }
-        }
-
-        if (value.has("eggs")) {
-            JsonValue eggs = value.get("eggs");
-            for (int i = 0; i < eggs.size; ++i) {
-                JsonValue egg = eggs.get(i);
-                createEgg(egg);
-            }
-        }
-
-        nextLevel = value.getString("next_level", "");
-
-        createDoor(value);
-        */
-
+        nextLevel = value.get("properties").getString("next_level", jsonFile);
         stage.startLevel();
+    }
+
+    private void extractSpawn(JsonValue layer) {
+        JsonValue value = layer.get("objects").get(0);
+        float x = value.getFloat("x", 0f) / 8f;
+        float y = value.getFloat("y", 0f) / 8f;
+        float w = value.getFloat("width") / 8f;
+        float h = value.getFloat("height") / 8f;
+
+        x += w / 2f;
+        y += h / 2f;
+
+        float angle = -value.getFloat("rotation", 0f);
+
+        playerStartX = x;
+        playerStartY = y;
+        playerStartAngle = angle;
+    }
+
+    private void extractSensors(JsonValue layer) {
+        JsonValue objects = layer.get("objects");
+        for (int i = 0; i < objects.size; ++i) {
+            JsonValue obj = objects.get(i);
+            String name = obj.getString("name");
+            if ("door".equals(name)) {
+                createDoor(obj);
+            } else if ("key".equals(name)) {
+                createKey(obj);
+                keysTotal++;
+            } else if ("egg".equals(name)) {
+                createEgg(obj);
+            }
+        }
     }
 
     private void extractStatics(JsonValue layer) {
@@ -147,8 +152,15 @@ public class Level {
     }
 
     private void createEgg(JsonValue value) {
-        float x = value.getFloat("x");
-        float y = value.getFloat("y");
+        float x = value.getFloat("x", 0f) / 8f;
+        float y = value.getFloat("y", 0f) / 8f;
+        float w = value.getFloat("width") / 8f;
+        float h = value.getFloat("height") / 8f;
+
+        x += w / 2f;
+        y += h / 2f;
+
+        float angle = -value.getFloat("rotation", 0f);
 
         Body egg = physics.createSphere(1.f, BodyDef.BodyType.StaticBody);
         egg.getFixtureList().get(0).setSensor(true);
@@ -178,21 +190,27 @@ public class Level {
     }
 
     private void createDoor(JsonValue value) {
-        float doorX = value.getFloat("door_x");
-        float doorY = value.getFloat("door_y");
-        float doorAngle = value.getFloat("door_angle");
+        float x = value.getFloat("x", 0f) / 8f;
+        float y = value.getFloat("y", 0f) / 8f;
+        float w = value.getFloat("width") / 8f;
+        float h = value.getFloat("height") / 8f;
+
+        x += w / 2f;
+        y += h / 2f;
+
+        float angle = -value.getFloat("rotation", 0f);
 
         door = physics.createBox(4f, 6f, BodyDef.BodyType.StaticBody);
         door.getFixtureList().get(0).setSensor(true);
-        physics.setBodyPosition(door, doorX, doorY);
-        door.setTransform(door.getPosition(), doorAngle * MathUtils.degRad);
+        physics.setBodyPosition(door, x, y);
+        door.setTransform(door.getPosition(), angle * MathUtils.degRad);
 
         doorActor = new SpriteActor(Res.create(value.getString("door_graphic", "door0")));
         stage.getGameActors().addActorAt(0, doorActor);
         doorActor.setSize(4f * Physics.INV_SCALE, 6f * Physics.INV_SCALE * 1.05f);
         doorActor.setOriginCenter();
-        doorActor.setRotation(doorAngle);
-        doorActor.setPosition(doorX * Physics.INV_SCALE - doorActor.getWidth() / 2f, doorY * Physics.INV_SCALE - doorActor.getHeight() / 2f);
+        doorActor.setRotation(angle);
+        doorActor.setPosition(x * Physics.INV_SCALE - doorActor.getWidth() / 2f, y * Physics.INV_SCALE - doorActor.getHeight() / 2f);
 
         door.getFixtureList().get(0).setUserData(new PhysicsCallback() {
             @Override
@@ -228,8 +246,16 @@ public class Level {
     }
 
     private void createKey(JsonValue value) {
-        float x = value.getFloat("x");
-        float y = value.getFloat("y");
+        float x = value.getFloat("x", 0f) / 8f;
+        float y = value.getFloat("y", 0f) / 8f;
+        float w = value.getFloat("width") / 8f;
+        float h = value.getFloat("height") / 8f;
+
+        x += w / 2f;
+        y += h / 2f;
+
+        float angle = -value.getFloat("rotation", 0f);
+
         final Body body = physics.createBox(1.5f, 3f, BodyDef.BodyType.StaticBody);
         physics.setBodyPosition(body, x, y);
         body.getFixtureList().get(0).setSensor(true);
@@ -272,7 +298,7 @@ public class Level {
         x += w / 2f;
         y += h / 2f;
 
-        float angle = value.getFloat("rotation", 0f);
+        float angle = -value.getFloat("rotation", 0f);
 
         if (ellipse) {
             float radius = w / 2f;
