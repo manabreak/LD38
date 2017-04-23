@@ -131,7 +131,7 @@ public class Player {
         }
 
         float velX = 0f;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             velX -= MOVE_VEL;
             facingRight = false;
             if (!walking) {
@@ -139,7 +139,7 @@ public class Player {
             }
             walking = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             velX += MOVE_VEL;
             facingRight = true;
             if (!walking) {
@@ -148,7 +148,7 @@ public class Player {
             walking = true;
         }
 
-        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D)) {
             if (walking) {
                 walking = false;
                 stopWalkAnimation();
