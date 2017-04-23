@@ -51,7 +51,7 @@ public class GameStage extends Stage {
         player = new Player(this);
         level = new Level(this);
 
-        level.load("lvl_0000");
+        level.load("lvl_0003");
     }
 
     private void initCamera() {

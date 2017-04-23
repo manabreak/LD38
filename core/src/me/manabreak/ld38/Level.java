@@ -198,7 +198,7 @@ public class Level {
         x += w / 2f;
         y += h / 2f;
 
-        float angle = -value.getFloat("rotation", 0f);
+        float angle = value.getFloat("rotation", 0f);
 
         door = physics.createBox(4f, 6f, BodyDef.BodyType.StaticBody);
         door.getFixtureList().get(0).setSensor(true);
@@ -298,7 +298,7 @@ public class Level {
         x += w / 2f;
         y += h / 2f;
 
-        float angle = -value.getFloat("rotation", 0f);
+        float angle = value.getFloat("rotation", 0f);
 
         if (ellipse) {
             float radius = w / 2f;
