@@ -60,9 +60,8 @@ public class Player {
         public void onCollisionEnd(Contact contact, Fixture other) {
             if (!other.isSensor()) {
                 groundedCounter--;
-                if (groundedCounter <= 0) {
+                if (groundedCounter == 0) {
                     grounded = false;
-                    groundedCounter = 0;
                 }
             }
         }
@@ -85,7 +84,8 @@ public class Player {
         actor.setOriginCenter();
         stage.addActor(actor);
 
-        body = stage.getPhysics().createBox(3f * r, 3.f, BodyDef.BodyType.DynamicBody);
+        // body = stage.getPhysics().createBox(3f * r, 3.f, BodyDef.BodyType.DynamicBody);
+        body = stage.getPhysics().createSphere(1.5f, BodyDef.BodyType.DynamicBody);
         body.getFixtureList().get(0).setUserData(bodyCallback);
         body.getFixtureList().get(0).setFriction(0f);
 
@@ -188,16 +188,15 @@ public class Player {
         float x = body.getPosition().x - actor.getWidth() / 2f;
         float y = body.getPosition().y - actor.getHeight() / 2f;
 
-        /*
-        x += MathUtils.cos(-body.getAngle()) * actor.getWidth();
-        y += MathUtils.sin(body.getAngle()) * actor.getHeight();
-        */
-
         if (!stage.isInverting()) {
             actor.setRotation((body.getAngle()) * radDeg);
             actor.sprite.setFlip(!facingRight, false);
 
             actor.setPosition(x, y);
+        }
+
+        if (!body.isAwake()) {
+            grounded = true;
         }
     }
 
