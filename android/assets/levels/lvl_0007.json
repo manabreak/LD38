@@ -20,47 +20,33 @@
                 }, 
                 {
                  "height":24,
-                 "id":13,
+                 "id":42,
                  "name":"",
-                 "rotation":-45,
+                 "rotation":-330,
                  "type":"",
                  "visible":true,
                  "width":24,
-                 "x":-54,
-                 "y":36
+                 "x":77.6076951545867,
+                 "y":62.5782579030639
                 }, 
                 {
                  "height":24,
-                 "id":20,
+                 "id":63,
                  "name":"",
-                 "rotation":-1.88418420511089,
+                 "properties":
+                    {
+                     "sprite":"rect1"
+                    },
+                 "propertytypes":
+                    {
+                     "sprite":"string"
+                    },
+                 "rotation":-270,
                  "type":"",
                  "visible":true,
-                 "width":24,
-                 "x":-105,
-                 "y":-21
-                }, 
-                {
-                 "height":24,
-                 "id":21,
-                 "name":"",
-                 "rotation":-331.081378932069,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":-128,
-                 "y":-96
-                }, 
-                {
-                 "height":24,
-                 "id":22,
-                 "name":"",
-                 "rotation":-669.402461403414,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":-98,
-                 "y":-170
+                 "width":48,
+                 "x":112,
+                 "y":-25
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -79,12 +65,12 @@
                  "height":32,
                  "id":10,
                  "name":"door",
-                 "rotation":-221.418672777394,
+                 "rotation":-571.80619796388,
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":-101,
-                 "y":-167
+                 "x":-11,
+                 "y":-37
                 }, 
                 {
                  "height":16,
@@ -94,8 +80,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":-176,
-                 "y":-32
+                 "x":26,
+                 "y":50
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -111,15 +97,39 @@
          "name":"spawn",
          "objects":[
                 {
-                 "height":16,
+                 "height":24,
                  "id":11,
                  "name":"",
-                 "rotation":-405,
+                 "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":16,
-                 "x":-45,
-                 "y":-34
+                 "width":24,
+                 "x":113,
+                 "y":-13
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":24,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":20,
+         "name":"rocks",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":32,
+                 "id":79,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":16,
+                 "y":-64
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -128,11 +138,11 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":23,
+ "nextobjectid":81,
  "orientation":"orthogonal",
  "properties":
     {
-     "next_level":"lvl_0004"
+     "next_level":"lvl_0008"
     },
  "propertytypes":
     {

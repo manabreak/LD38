@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -51,7 +52,7 @@ public class GameStage extends Stage {
         player = new Player(this);
         level = new Level(this);
 
-        level.load("lvl_0003");
+        level.load("lvl_0006");
     }
 
     private void initCamera() {
@@ -88,7 +89,14 @@ public class GameStage extends Stage {
         player.act(dt);
         physics.act(dt);
 
-        setCameraRotation(player.getAngleRad());
+        Vector2 playerPos = player.getBodyPosition();
+        if (playerPos.len2() < 160f) {
+            setCameraRotation(player.getAngleRad());
+        } else {
+            Body body = player.getBody();
+            body.setLinearVelocity(0f, 0f);
+            level.reset();
+        }
     }
 
     public Group getGameActors() {
@@ -134,10 +142,14 @@ public class GameStage extends Stage {
         actors.addAction(Actions.fadeIn(2f, Interpolation.fade));
     }
 
-    public void invert() {
-        inverting = true;
-        invertTimer = 0f;
-        invertStartAngle = player.getBody().getAngle();
+    public void invert(boolean immediate) {
+        if (immediate) {
+            player.invertGravity();
+        } else {
+            inverting = true;
+            invertTimer = 0f;
+            invertStartAngle = player.getBody().getAngle();
+        }
     }
 
     public boolean isInverting() {

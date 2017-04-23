@@ -29,11 +29,15 @@ public class Level {
 
     private List<Body> toBeDestroyed = new ArrayList<>();
     private List<Body> keys = new ArrayList<>();
+
+    private String currentLevel = null;
     private String nextLevel = null;
     private String levelToLoad = null;
 
     private List<SpriteActor> keyActors = new ArrayList<>();
     SpriteActor doorActor;
+    private List<SpriteActor> eggActors = new ArrayList<>();
+    private List<Body> eggBodies = new ArrayList<>();
 
     public Level(GameStage stage) {
         this.stage = stage;
@@ -41,6 +45,7 @@ public class Level {
     }
 
     public void load(String jsonFile) {
+        currentLevel = jsonFile;
         clear();
 
         FileHandle f = Gdx.files.internal("levels/" + jsonFile + ".json");
@@ -149,6 +154,15 @@ public class Level {
         }
         keys.clear();
 
+        for (Body body : eggBodies) {
+            physics.destroy(body);
+        }
+        eggBodies.clear();
+
+        for (SpriteActor actor : eggActors) {
+            actor.remove();
+        }
+        eggActors.clear();
     }
 
     private void createEgg(JsonValue value) {
@@ -156,15 +170,24 @@ public class Level {
         float y = value.getFloat("y", 0f) / 8f;
         float w = value.getFloat("width") / 8f;
         float h = value.getFloat("height") / 8f;
+        float angle = value.getFloat("rotation", 0f);
 
-        x += w / 2f;
-        y += h / 2f;
+        float cx = w / 2f;
+        float cy = h / 2f;
 
-        float angle = -value.getFloat("rotation", 0f);
+        float cosR = MathUtils.cosDeg(angle);
+        float sinR = MathUtils.sinDeg(angle);
+        float rotcx = cx * cosR - cy * sinR;
+        float rotcy = cx * sinR + cy * cosR;
+
+        x = x + rotcx;
+        y = y + rotcy;
 
         Body egg = physics.createSphere(1.f, BodyDef.BodyType.StaticBody);
         egg.getFixtureList().get(0).setSensor(true);
         physics.setBodyPosition(egg, x, y);
+
+        eggBodies.add(egg);
 
         SpriteActor a = new SpriteActor(Res.create("egg0"));
         stage.getGameActors().addActorAt(0, a);
@@ -173,12 +196,14 @@ public class Level {
         a.setOriginCenter();
         a.setPosition(x * Physics.INV_SCALE - a.getWidth() / 2f, y * Physics.INV_SCALE - a.getHeight() / 2f);
 
+        eggActors.add(a);
+
         egg.getFixtureList().get(0).setUserData(new PhysicsCallback() {
             @Override
             public void onCollisionBegin(Contact contact, Fixture other) {
                 if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
                     // stage.getPlayer().invertGravity();
-                    stage.invert();
+                    stage.invert(false);
                 }
             }
 
@@ -194,11 +219,18 @@ public class Level {
         float y = value.getFloat("y", 0f) / 8f;
         float w = value.getFloat("width") / 8f;
         float h = value.getFloat("height") / 8f;
-
-        x += w / 2f;
-        y += h / 2f;
-
         float angle = value.getFloat("rotation", 0f);
+
+        float cx = w / 2f;
+        float cy = h / 2f;
+
+        float cosR = MathUtils.cosDeg(angle);
+        float sinR = MathUtils.sinDeg(angle);
+        float rotcx = cx * cosR - cy * sinR;
+        float rotcy = cx * sinR + cy * cosR;
+
+        x = x + rotcx;
+        y = y + rotcy;
 
         door = physics.createBox(4f, 6f, BodyDef.BodyType.StaticBody);
         door.getFixtureList().get(0).setSensor(true);
@@ -250,11 +282,18 @@ public class Level {
         float y = value.getFloat("y", 0f) / 8f;
         float w = value.getFloat("width") / 8f;
         float h = value.getFloat("height") / 8f;
+        float angle = value.getFloat("rotation", 0f);
 
-        x += w / 2f;
-        y += h / 2f;
+        float cx = w / 2f;
+        float cy = h / 2f;
 
-        float angle = -value.getFloat("rotation", 0f);
+        float cosR = MathUtils.cosDeg(angle);
+        float sinR = MathUtils.sinDeg(angle);
+        float rotcx = cx * cosR - cy * sinR;
+        float rotcy = cx * sinR + cy * cosR;
+
+        x = x + rotcx;
+        y = y + rotcy;
 
         final Body body = physics.createBox(1.5f, 3f, BodyDef.BodyType.StaticBody);
         physics.setBodyPosition(body, x, y);
@@ -294,11 +333,18 @@ public class Level {
         float y = value.getFloat("y", 0f) / 8f;
         float w = value.getFloat("width") / 8f;
         float h = value.getFloat("height") / 8f;
-
-        x += w / 2f;
-        y += h / 2f;
-
         float angle = value.getFloat("rotation", 0f);
+
+        float cx = w / 2f;
+        float cy = h / 2f;
+
+        float cosR = MathUtils.cosDeg(angle);
+        float sinR = MathUtils.sinDeg(angle);
+        float rotcx = cx * cosR - cy * sinR;
+        float rotcy = cx * sinR + cy * cosR;
+
+        x = x + rotcx;
+        y = y + rotcy;
 
         if (ellipse) {
             float radius = w / 2f;
@@ -312,7 +358,13 @@ public class Level {
         } else {
             body = physics.createBox(w, h, BodyDef.BodyType.StaticBody);
 
-            SpriteActor actor = new SpriteActor(Res.create(value.getString("sprite", "rect0")));
+            String spr = "rect0";
+            if (value.has("properties")) {
+                JsonValue props = value.get("properties");
+                spr = props.getString("sprite", "rect0");
+            }
+
+            SpriteActor actor = new SpriteActor(Res.create(spr));
             actor.setSize(w * Physics.INV_SCALE * 1.05f, h * Physics.INV_SCALE * 1.05f);
             stage.getGameActors().addActor(actor);
             actor.setOriginCenter();
@@ -340,5 +392,16 @@ public class Level {
 
     public void loadNext() {
         levelToLoad = nextLevel;
+    }
+
+    public void reset() {
+
+        if (stage.getPlayer().isInverted()) {
+            stage.invert(true);
+        }
+        Body body = stage.getPlayer().getBody();
+        physics.setBodyPosition(body, playerStartX, playerStartY);
+
+        load(currentLevel);
     }
 }
