@@ -46,13 +46,25 @@ public class Level {
         FileHandle f = Gdx.files.internal("levels/" + jsonFile + ".json");
         JsonReader reader = new JsonReader();
         JsonValue value = reader.parse(f);
+
+        JsonValue layers = value.get("layers");
+        for (int i = 0; i < layers.size; ++i) {
+            JsonValue layer = layers.get(i);
+            if ("statics".equals(layer.getString("name"))) {
+                extractStatics(layer);
+            }
+        }
+
+        /*
         playerStartX = value.getFloat("start_x");
         playerStartY = value.getFloat("start_y");
         playerStartAngle = value.getFloat("start_angle");
+        */
 
         Player player = stage.getPlayer();
         physics.setBodyPosition(player.getBody(), playerStartX, playerStartY);
 
+        /*
         JsonValue statics = value.get("statics");
         for (int i = 0; i < statics.size; ++i) {
             JsonValue stat = statics.get(i);
@@ -76,11 +88,20 @@ public class Level {
             }
         }
 
-        nextLevel = value.getString("next_level");
+        nextLevel = value.getString("next_level", "");
 
         createDoor(value);
+        */
 
         stage.startLevel();
+    }
+
+    private void extractStatics(JsonValue layer) {
+        JsonValue objects = layer.get("objects");
+        for (int i = 0; i < objects.size; ++i) {
+            JsonValue obj = objects.get(i);
+            createStatic(obj);
+        }
     }
 
     public void clear() {
@@ -239,13 +260,22 @@ public class Level {
     }
 
     private void createStatic(JsonValue value) {
-        Body body = null;
-        String shape = value.getString("shape");
-        float x = value.getFloat("x", 0f);
-        float y = value.getFloat("y", 0f);
-        float angle = value.getFloat("angle", 0f);
-        if ("circle".equals(shape)) {
-            float radius = value.getFloat("radius");
+        Body body;
+
+        boolean ellipse = value.getBoolean("ellipse", false);
+
+        float x = value.getFloat("x", 0f) / 8f;
+        float y = value.getFloat("y", 0f) / 8f;
+        float w = value.getFloat("width") / 8f;
+        float h = value.getFloat("height") / 8f;
+
+        x += w / 2f;
+        y += h / 2f;
+
+        float angle = value.getFloat("rotation", 0f);
+
+        if (ellipse) {
+            float radius = w / 2f;
             body = physics.createSphere(radius, BodyDef.BodyType.StaticBody);
 
             SpriteActor actor = new SpriteActor(Res.create("earth0"));
@@ -253,13 +283,11 @@ public class Level {
             stage.getGameActors().addActor(actor);
             actor.setPosition(x * Physics.INV_SCALE - actor.getWidth() / 2f, y * Physics.INV_SCALE - actor.getHeight() / 2f);
             staticActors.add(actor);
-        } else if ("rect".equals(shape)) {
-            float width = value.getFloat("width");
-            float height = value.getFloat("height");
-            body = physics.createBox(width, height, BodyDef.BodyType.StaticBody);
+        } else {
+            body = physics.createBox(w, h, BodyDef.BodyType.StaticBody);
 
             SpriteActor actor = new SpriteActor(Res.create(value.getString("sprite", "rect0")));
-            actor.setSize(width * Physics.INV_SCALE * 1.05f, height * Physics.INV_SCALE * 1.05f);
+            actor.setSize(w * Physics.INV_SCALE * 1.05f, h * Physics.INV_SCALE * 1.05f);
             stage.getGameActors().addActor(actor);
             actor.setOriginCenter();
             actor.setRotation(angle);
