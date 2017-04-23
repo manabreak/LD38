@@ -32,6 +32,27 @@ egg0
   orig: 151, 192
   offset: 0, 0
   index: -1
+feather0
+  rotate: false
+  xy: 519, 821
+  size: 26, 63
+  orig: 26, 63
+  offset: 0, 0
+  index: -1
+feather1
+  rotate: false
+  xy: 260, 503
+  size: 24, 65
+  orig: 24, 65
+  offset: 0, 0
+  index: -1
+feather2
+  rotate: false
+  xy: 414, 722
+  size: 22, 41
+  orig: 22, 41
+  offset: 0, 0
+  index: -1
 key
   rotate: false
   xy: 175, 1
@@ -69,7 +90,7 @@ sky
   index: -1
 white
   rotate: false
-  xy: 519, 868
+  xy: 909, 1006
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

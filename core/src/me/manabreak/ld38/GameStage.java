@@ -19,6 +19,7 @@ public class GameStage extends Stage {
 
     private static final float CAM_LERP_SPEED = 1f;
     private final Player player;
+    private final FeatherSpawner featherSpawner;
     private Physics physics;
     private Level level;
 
@@ -31,6 +32,7 @@ public class GameStage extends Stage {
     private Group actors;
     private boolean resetting = false;
     private float resetTimer = 0f;
+    private boolean levelComplete = false;
 
     public GameStage() {
         super(new ExtendViewport(5f, 5f));
@@ -54,13 +56,19 @@ public class GameStage extends Stage {
         player = new Player(this);
         level = new Level(this);
 
-        level.load("lvl_0004");
+        featherSpawner = new FeatherSpawner(this);
+
+        level.load("lvl_0010");
     }
 
     private void initCamera() {
         Camera cam = getCamera();
         cam.position.x = 0f;
         cam.position.y = 0f;
+    }
+
+    public FeatherSpawner getFeatherSpawner() {
+        return featherSpawner;
     }
 
     @Override
@@ -105,8 +113,7 @@ public class GameStage extends Stage {
         if (playerPos.len2() < 160f) {
             setCameraRotation(player.getAngleRad());
         } else if (!resetting) {
-            resetting = true;
-            resetTimer = 0f;
+            reset(false);
         }
     }
 
@@ -140,11 +147,13 @@ public class GameStage extends Stage {
     }
 
     public void levelComplete() {
+        levelComplete = true;
         actors.addAction(Actions.sequence(Actions.fadeOut(2f, Interpolation.fade),
                 Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         level.loadNext();
+                        levelComplete = false;
                     }
                 })));
     }
@@ -165,5 +174,14 @@ public class GameStage extends Stage {
 
     public boolean isInverting() {
         return inverting;
+    }
+
+    public void reset(boolean immediate) {
+        if (levelComplete) return;
+
+        if (!resetting) {
+            resetting = true;
+            resetTimer = immediate ? 10f : 0f;
+        }
     }
 }

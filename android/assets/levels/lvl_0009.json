@@ -7,29 +7,6 @@
          "name":"statics",
          "objects":[
                 {
-                 "ellipse":true,
-                 "height":80,
-                 "id":7,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":80,
-                 "x":-40,
-                 "y":-40
-                }, 
-                {
-                 "height":24,
-                 "id":42,
-                 "name":"",
-                 "rotation":-330,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":-47,
-                 "y":58
-                }, 
-                {
                  "height":24,
                  "id":63,
                  "name":"",
@@ -41,12 +18,56 @@
                     {
                      "sprite":"string"
                     },
-                 "rotation":-270,
+                 "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":112,
-                 "y":-25
+                 "x":-24,
+                 "y":-128
+                }, 
+                {
+                 "height":48,
+                 "id":91,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":-24,
+                 "y":-24
+                }, 
+                {
+                 "height":24,
+                 "id":92,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":-83,
+                 "y":-15
+                }, 
+                {
+                 "height":24,
+                 "id":93,
+                 "name":"",
+                 "rotation":-45,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":-90,
+                 "y":70
+                }, 
+                {
+                 "height":24,
+                 "id":94,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":-30,
+                 "y":102
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -65,12 +86,12 @@
                  "height":32,
                  "id":10,
                  "name":"door",
-                 "rotation":-571.80619796388,
+                 "rotation":-360,
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":-11,
-                 "y":-37
+                 "x":-9,
+                 "y":-54
                 }, 
                 {
                  "height":16,
@@ -80,8 +101,30 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":-68,
-                 "y":92
+                 "x":-109,
+                 "y":-12
+                }, 
+                {
+                 "height":16,
+                 "id":85,
+                 "name":"key",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":-27,
+                 "y":141
+                }, 
+                {
+                 "height":16,
+                 "id":86,
+                 "name":"key",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":-110,
+                 "y":91
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -104,8 +147,8 @@
                  "type":"",
                  "visible":true,
                  "width":24,
-                 "x":113,
-                 "y":-13
+                 "x":-13,
+                 "y":-156
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -122,14 +165,14 @@
                 {
                  "ellipse":true,
                  "height":32,
-                 "id":79,
+                 "id":84,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":16,
-                 "y":-64
+                 "x":32,
+                 "y":-16
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -138,11 +181,11 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":81,
+ "nextobjectid":95,
  "orientation":"orthogonal",
  "properties":
     {
-     "next_level":"lvl_0008"
+     "next_level":"lvl_0010"
     },
  "propertytypes":
     {

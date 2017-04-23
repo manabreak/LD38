@@ -42,10 +42,17 @@ public class Player {
     private boolean grounded = false;
     private int groundedCounter = 0;
 
+    // Hack for player getting stuck at times
+    private float groundedTimer = 0f;
+
     private PhysicsCallback groundSensorCallback = new PhysicsCallback() {
         @Override
         public void onCollisionBegin(Contact contact, Fixture other) {
             if (!other.isSensor()) {
+                if (!grounded) {
+                    Vector2 v = body.getWorldPoint(new Vector2(0f, -0.2f));
+                    stage.getFeatherSpawner().spawn(v.x, v.y, contact.getWorldManifold().getNormal());
+                }
                 grounded = true;
                 groundedCounter++;
                 actor.clearActions();
@@ -62,6 +69,7 @@ public class Player {
                 groundedCounter--;
                 if (groundedCounter == 0) {
                     grounded = false;
+                    groundedTimer = 0f;
                 }
             }
         }
@@ -111,6 +119,14 @@ public class Player {
             body.applyForce(-playerGravity.x, -playerGravity.y, 0f, 0f, true);
         } else {
             body.applyForce(playerGravity.x, playerGravity.y, 0f, 0f, true);
+        }
+
+        if (!grounded) {
+            groundedTimer += dt;
+            if (groundedTimer >= 1f) {
+                grounded = true;
+                groundedCounter = 1;
+            }
         }
 
         float velX = 0f;
@@ -179,7 +195,9 @@ public class Player {
         } else {
             Vector2 vel = body.getLinearVelocity();
             vel.rotateRad(body.getAngle());
-            vel.scl(0.9f, 1f);
+            if (grounded) {
+                vel.scl(0.6f);
+            }
             vel.rotateRad(-body.getAngle());
             body.setLinearVelocity(vel);
         }

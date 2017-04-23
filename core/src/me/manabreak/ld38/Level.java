@@ -38,6 +38,7 @@ public class Level {
     SpriteActor doorActor;
     private List<SpriteActor> eggActors = new ArrayList<>();
     private List<Body> eggBodies = new ArrayList<>();
+    private List<Rock> rocks = new ArrayList<>();
 
     public Level(GameStage stage) {
         this.stage = stage;
@@ -171,12 +172,20 @@ public class Level {
         for (SpriteActor actor : eggActors) {
             actor.remove();
         }
+
+        for (Rock rock : rocks) {
+            rock.remove();
+            physics.destroy(rock.getBody());
+        }
+        rocks.clear();
+
         eggActors.clear();
     }
 
     private void createRock(JsonValue value) {
         Rock rock = new Rock(stage, value);
         stage.addActor(rock);
+        rocks.add(rock);
     }
 
     private void createEgg(JsonValue value) {

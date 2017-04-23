@@ -5,15 +5,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.JsonValue;
 
-public class Rock extends SpriteActor {
+public class Rock extends SpriteActor implements PhysicsCallback {
 
     private final Body body;
+    private final GameStage stage;
 
     public Rock(GameStage stage, JsonValue value) {
         super(Res.create("rock"));
+        this.stage = stage;
         Physics physics = stage.getPhysics();
 
         float x = value.getFloat("x", 0f) / 8f;
@@ -50,7 +54,8 @@ public class Rock extends SpriteActor {
         fdef.friction = 0.6f;
         fdef.restitution = 0.3f;
         fdef.shape = shape;
-        body.createFixture(fdef);
+        Fixture fixture = body.createFixture(fdef);
+        fixture.setUserData(this);
 
         shape.dispose();
 
@@ -67,7 +72,7 @@ public class Rock extends SpriteActor {
         }
 
         if (body.getAngularVelocity() < 5f) {
-            body.applyTorque(5f, true);
+            body.applyTorque(25f, true);
         }
 
 
@@ -79,5 +84,21 @@ public class Rock extends SpriteActor {
         // setRotation((body.getAngle()) * radDeg);
         // setPosition(x, y);
 
+    }
+
+    @Override
+    public void onCollisionBegin(Contact contact, Fixture other) {
+        if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
+            stage.reset(true);
+        }
+    }
+
+    @Override
+    public void onCollisionEnd(Contact contact, Fixture other) {
+
+    }
+
+    public Body getBody() {
+        return body;
     }
 }

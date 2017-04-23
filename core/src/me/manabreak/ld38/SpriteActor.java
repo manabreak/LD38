@@ -1,5 +1,6 @@
 package me.manabreak.ld38;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,6 +17,7 @@ public class SpriteActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+        sprite.setColor(getColor());
         sprite.draw(batch, parentAlpha);
     }
 
@@ -100,5 +102,24 @@ public class SpriteActor extends Actor {
     public void setOrigin(float originX, float originY) {
         super.setOrigin(originX, originY);
         sprite.setOrigin(0f, 0f);
+    }
+
+    @Override
+    public void moveBy(float x, float y) {
+        sprite.setX(sprite.getX() + x);
+        sprite.setY(sprite.getY() + y);
+        super.moveBy(x, y);
+    }
+
+    @Override
+    public void setColor(Color color) {
+        super.setColor(color);
+        sprite.setColor(color);
+    }
+
+    @Override
+    public void setColor(float r, float g, float b, float a) {
+        super.setColor(r, g, b, a);
+        sprite.setColor(r, g, b, a);
     }
 }
