@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -18,7 +19,6 @@ public class GameStage extends Stage {
     private static final float CAM_LERP_SPEED = 1f;
     private final Player player;
     private Physics physics;
-
     private Level level;
 
     Sprite s;
@@ -26,19 +26,32 @@ public class GameStage extends Stage {
     private float invertTimer = 0f;
     private float invertStartAngle;
 
+    private SpriteActor sky;
+    private Group actors;
+
     public GameStage() {
-        super(new ExtendViewport(6f, 6f));
+        super(new ExtendViewport(5f, 5f));
         physics = new Physics();
         initCamera();
 
+        sky = new SpriteActor(Res.create("sky"));
+        float max = Math.max(getWidth(), getHeight());
+        max *= 2f;
+        sky.setSize(max, max);
+        sky.setPosition(-max / 2f, -max / 2f);
+        addActor(sky);
+
+        actors = new Group();
+        addActor(actors);
+
         s = Res.create("chicken");
 
-        getRoot().setColor(1f, 1f, 1f, 0f);
+        actors.setColor(1f, 1f, 1f, 0f);
 
         player = new Player(this);
         level = new Level(this);
 
-        level.load("0003");
+        level.load("0000");
     }
 
     private void initCamera() {
@@ -78,6 +91,10 @@ public class GameStage extends Stage {
         setCameraRotation(player.getAngleRad());
     }
 
+    public Group getGameActors() {
+        return actors;
+    }
+
     private void setCameraRotation(float a) {
         OrthographicCamera cam = (OrthographicCamera) getCamera();
         cam.up.set(0f, 1f, 0f);
@@ -104,7 +121,7 @@ public class GameStage extends Stage {
     }
 
     public void levelComplete() {
-        getRoot().addAction(Actions.sequence(Actions.fadeOut(2f, Interpolation.fade),
+        actors.addAction(Actions.sequence(Actions.fadeOut(2f, Interpolation.fade),
                 Actions.run(new Runnable() {
                     @Override
                     public void run() {
@@ -114,7 +131,7 @@ public class GameStage extends Stage {
     }
 
     public void startLevel() {
-        getRoot().addAction(Actions.fadeIn(2f, Interpolation.fade));
+        actors.addAction(Actions.fadeIn(2f, Interpolation.fade));
     }
 
     public void invert() {

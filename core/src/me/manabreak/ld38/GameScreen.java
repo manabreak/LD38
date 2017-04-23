@@ -22,6 +22,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl20.glClearColor(0.757f, 0.934f, 1f, 0f);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         gameStage.act(delta);
         gameStage.draw();
     }

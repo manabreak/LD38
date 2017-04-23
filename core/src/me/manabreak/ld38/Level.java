@@ -134,7 +134,7 @@ public class Level {
         physics.setBodyPosition(egg, x, y);
 
         SpriteActor a = new SpriteActor(Res.create("egg0"));
-        stage.getRoot().addActorAt(0, a);
+        stage.getGameActors().addActorAt(0, a);
         float r = a.sprite.getWidth() / a.sprite.getHeight();
         a.setSize(3f * r * Physics.INV_SCALE, 3f * Physics.INV_SCALE);
         a.setOriginCenter();
@@ -143,7 +143,7 @@ public class Level {
         egg.getFixtureList().get(0).setUserData(new PhysicsCallback() {
             @Override
             public void onCollisionBegin(Contact contact, Fixture other) {
-                if(other.getUserData() == stage.getPlayer().getPlayerCallback()) {
+                if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
                     // stage.getPlayer().invertGravity();
                     stage.invert();
                 }
@@ -167,7 +167,7 @@ public class Level {
         door.setTransform(door.getPosition(), doorAngle * MathUtils.degRad);
 
         doorActor = new SpriteActor(Res.create(value.getString("door_graphic", "door0")));
-        stage.getRoot().addActorAt(0, doorActor);
+        stage.getGameActors().addActorAt(0, doorActor);
         doorActor.setSize(4f * Physics.INV_SCALE, 6f * Physics.INV_SCALE * 1.05f);
         doorActor.setOriginCenter();
         doorActor.setRotation(doorAngle);
@@ -215,7 +215,7 @@ public class Level {
         keys.add(body);
 
         final SpriteActor a = new SpriteActor(Res.create("key"));
-        stage.addActor(a);
+        stage.getGameActors().addActor(a);
         a.setSize(1.5f * Physics.INV_SCALE, 3f * Physics.INV_SCALE);
         a.setPosition(x * Physics.INV_SCALE - a.getWidth() / 2f, y * Physics.INV_SCALE - a.getHeight() / 2f);
 
@@ -250,7 +250,7 @@ public class Level {
 
             SpriteActor actor = new SpriteActor(Res.create("earth0"));
             actor.setSize(radius * 2f * Physics.INV_SCALE * 1.05f, radius * 2f * Physics.INV_SCALE * 1.05f);
-            stage.addActor(actor);
+            stage.getGameActors().addActor(actor);
             actor.setPosition(x * Physics.INV_SCALE - actor.getWidth() / 2f, y * Physics.INV_SCALE - actor.getHeight() / 2f);
             staticActors.add(actor);
         } else if ("rect".equals(shape)) {
@@ -260,7 +260,7 @@ public class Level {
 
             SpriteActor actor = new SpriteActor(Res.create(value.getString("sprite", "rect0")));
             actor.setSize(width * Physics.INV_SCALE * 1.05f, height * Physics.INV_SCALE * 1.05f);
-            stage.addActor(actor);
+            stage.getGameActors().addActor(actor);
             actor.setOriginCenter();
             actor.setRotation(angle);
             actor.setPosition(x * Physics.INV_SCALE - actor.getWidth() / 2f, y * Physics.INV_SCALE - actor.getHeight() / 2f);
