@@ -26,7 +26,7 @@ public class Physics implements ContactListener {
     private final Box2DDebugRenderer debugRenderer;
     private final Vector2 worldGravity;
     private World world;
-    private boolean debugDrawEnabled = true;
+    private boolean debugDrawEnabled = false;
 
     public Physics() {
         worldGravity = new Vector2(0f, 0f);

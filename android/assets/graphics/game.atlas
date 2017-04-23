@@ -1,96 +1,96 @@
 
 game.png
-size: 1024,1024
+size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 chicken
   rotate: false
-  xy: 1, 260
+  xy: 1, 1
   size: 256, 244
   orig: 256, 244
   offset: 0, 0
   index: -1
 door0
   rotate: false
-  xy: 1, 1
+  xy: 842, 248
   size: 171, 256
   orig: 171, 256
   offset: 0, 0
   index: -1
 earth0
   rotate: false
-  xy: 1, 766
+  xy: 1, 248
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 egg0
   rotate: false
-  xy: 260, 571
+  xy: 260, 53
   size: 151, 192
   orig: 151, 192
   offset: 0, 0
   index: -1
 feather0
   rotate: false
-  xy: 519, 821
+  xy: 519, 259
   size: 26, 63
   orig: 26, 63
   offset: 0, 0
   index: -1
 feather1
   rotate: false
-  xy: 260, 503
+  xy: 688, 126
   size: 24, 65
   orig: 24, 65
   offset: 0, 0
   index: -1
 feather2
   rotate: false
-  xy: 414, 722
+  xy: 260, 9
   size: 22, 41
   orig: 22, 41
   offset: 0, 0
   index: -1
 key
   rotate: false
-  xy: 175, 1
+  xy: 577, 66
   size: 108, 256
   orig: 108, 256
   offset: 0, 0
   index: -1
 rect0
   rotate: false
-  xy: 1, 507
-  size: 256, 256
-  orig: 256, 256
+  xy: 414, 85
+  size: 160, 160
+  orig: 160, 160
   offset: 0, 0
   index: -1
 rect1
   rotate: false
-  xy: 519, 887
-  size: 256, 135
-  orig: 256, 135
+  xy: 519, 325
+  size: 320, 179
+  orig: 320, 179
   offset: 0, 0
   index: -1
 rock
   rotate: false
-  xy: 260, 766
+  xy: 260, 248
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 sky
   rotate: false
-  xy: 778, 894
+  xy: 688, 194
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 909, 1006
+  xy: 414, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
