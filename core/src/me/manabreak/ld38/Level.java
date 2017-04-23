@@ -227,6 +227,7 @@ public class Level {
                 if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
                     // stage.getPlayer().invertGravity();
                     stage.invert(false);
+                    Res.invert.play();
                 }
             }
 
@@ -274,6 +275,7 @@ public class Level {
                     System.out.println("Player touched door");
                     if (keysCollected == keysTotal) {
                         System.out.println("Level complete!");
+                        Res.door.play();
                         stage.levelComplete();
                     } else {
                         System.out.println("Keys missing...");
@@ -336,6 +338,7 @@ public class Level {
                     toBeDestroyed.add(body);
                     keys.remove(body);
                     a.remove();
+                    Res.key.play();
                     if (keysCollected == keysTotal) {
                         System.out.println("All keys collected!");
                     } else {

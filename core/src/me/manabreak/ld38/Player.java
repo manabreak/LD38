@@ -52,6 +52,7 @@ public class Player {
                 if (!grounded) {
                     Vector2 v = body.getWorldPoint(new Vector2(0f, -0.2f));
                     stage.getFeatherSpawner().spawn(v.x, v.y, contact.getWorldManifold().getNormal());
+                    // Res.land.play();
                 }
                 grounded = true;
                 groundedCounter++;
@@ -158,6 +159,7 @@ public class Player {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 grounded = false;
                 jumping = true;
+                Res.jump.play();
                 Vector2 jumpVec = new Vector2(0f, 3f);
                 jumpingForce = 100f;
                 jumpVec.rotateRad(body.getAngle());

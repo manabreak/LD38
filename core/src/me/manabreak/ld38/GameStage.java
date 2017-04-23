@@ -58,7 +58,7 @@ public class GameStage extends Stage {
 
         featherSpawner = new FeatherSpawner(this);
 
-        level.load("lvl_0010");
+        level.load("lvl_0000");
     }
 
     private void initCamera() {
@@ -113,6 +113,7 @@ public class GameStage extends Stage {
         if (playerPos.len2() < 160f) {
             setCameraRotation(player.getAngleRad());
         } else if (!resetting) {
+            Res.fall.play();
             reset(false);
         }
     }

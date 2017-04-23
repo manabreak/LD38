@@ -90,6 +90,7 @@ public class Rock extends SpriteActor implements PhysicsCallback {
     public void onCollisionBegin(Contact contact, Fixture other) {
         if (other.getUserData() == stage.getPlayer().getPlayerCallback()) {
             stage.reset(true);
+            Res.rock.play();
         }
     }
 
