@@ -62,6 +62,8 @@ public class Level {
                 extractSensors(layer);
             } else if ("spawn".equals(name)) {
                 extractSpawn(layer);
+            } else if ("rocks".equals(name)) {
+                extractRocks(layer);
             }
         }
 
@@ -71,6 +73,13 @@ public class Level {
 
         nextLevel = value.get("properties").getString("next_level", jsonFile);
         stage.startLevel();
+    }
+
+    private void extractRocks(JsonValue layer) {
+        JsonValue objects = layer.get("objects");
+        for (int i = 0; i < objects.size; ++i) {
+            createRock(objects.get(i));
+        }
     }
 
     private void extractSpawn(JsonValue layer) {
@@ -163,6 +172,11 @@ public class Level {
             actor.remove();
         }
         eggActors.clear();
+    }
+
+    private void createRock(JsonValue value) {
+        Rock rock = new Rock(stage, value);
+        stage.addActor(rock);
     }
 
     private void createEgg(JsonValue value) {

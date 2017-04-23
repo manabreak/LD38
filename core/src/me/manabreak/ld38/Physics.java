@@ -127,4 +127,8 @@ public class Physics implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
     }
+
+    public World getWorld() {
+        return world;
+    }
 }

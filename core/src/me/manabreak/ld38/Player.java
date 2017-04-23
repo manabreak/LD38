@@ -100,7 +100,6 @@ public class Player {
         shape.dispose();
 
         playerGravity = new Vector2(0f, 0f);
-
     }
 
     public void setPlayerGravity(float x, float y) {
@@ -191,7 +190,6 @@ public class Player {
         if (!stage.isInverting()) {
             actor.setRotation((body.getAngle()) * radDeg);
             actor.sprite.setFlip(!facingRight, false);
-
             actor.setPosition(x, y);
         }
 

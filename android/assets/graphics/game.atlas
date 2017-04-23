@@ -1,68 +1,75 @@
 
 game.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 chicken
   rotate: false
-  xy: 1, 1
+  xy: 1, 260
   size: 256, 244
   orig: 256, 244
   offset: 0, 0
   index: -1
 door0
   rotate: false
-  xy: 519, 248
+  xy: 1, 1
   size: 171, 256
   orig: 171, 256
   offset: 0, 0
   index: -1
 earth0
   rotate: false
-  xy: 1, 248
+  xy: 1, 766
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 egg0
   rotate: false
-  xy: 804, 312
+  xy: 260, 571
   size: 151, 192
   orig: 151, 192
   offset: 0, 0
   index: -1
 key
   rotate: false
-  xy: 693, 248
+  xy: 175, 1
   size: 108, 256
   orig: 108, 256
   offset: 0, 0
   index: -1
 rect0
   rotate: false
-  xy: 260, 248
+  xy: 1, 507
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 rect1
   rotate: false
-  xy: 260, 110
+  xy: 519, 887
   size: 256, 135
   orig: 256, 135
   offset: 0, 0
   index: -1
+rock
+  rotate: false
+  xy: 260, 766
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 sky
   rotate: false
-  xy: 519, 117
+  xy: 778, 894
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 260, 91
+  xy: 519, 868
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

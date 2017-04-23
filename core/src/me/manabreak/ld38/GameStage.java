@@ -29,6 +29,8 @@ public class GameStage extends Stage {
 
     private SpriteActor sky;
     private Group actors;
+    private boolean resetting = false;
+    private float resetTimer = 0f;
 
     public GameStage() {
         super(new ExtendViewport(5f, 5f));
@@ -52,7 +54,7 @@ public class GameStage extends Stage {
         player = new Player(this);
         level = new Level(this);
 
-        level.load("lvl_0006");
+        level.load("lvl_0004");
     }
 
     private void initCamera() {
@@ -77,6 +79,16 @@ public class GameStage extends Stage {
             return;
         }
 
+        if (resetting) {
+            resetTimer += dt;
+            if (resetTimer >= 1f) {
+                Body body = player.getBody();
+                body.setLinearVelocity(0f, 0f);
+                level.reset();
+                resetting = false;
+            }
+        }
+
         level.act(dt);
 
         Vector2 pos = player.getBodyPosition().cpy();
@@ -92,10 +104,9 @@ public class GameStage extends Stage {
         Vector2 playerPos = player.getBodyPosition();
         if (playerPos.len2() < 160f) {
             setCameraRotation(player.getAngleRad());
-        } else {
-            Body body = player.getBody();
-            body.setLinearVelocity(0f, 0f);
-            level.reset();
+        } else if (!resetting) {
+            resetting = true;
+            resetTimer = 0f;
         }
     }
 
